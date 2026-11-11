@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Products | NADÉA PARFUM</title>
+
+    <link rel="stylesheet" href="../css/admin.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'DM Sans', sans-serif;
+            background: #fffaf8;
+        }
+
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            min-width: 250px;
+            background: #563f43;
+            color: white;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .admin-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 23px;
+            text-align: center;
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        .admin-logo span {
+            color: #d9a6a9;
+        }
+
+        .admin-logo small {
+            display: block;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 10px;
+            letter-spacing: 4px;
+            margin-top: 10px;
+            color: #d9bfc0;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sidebar-menu a {
+            display: block;
+            padding: 14px 17px;
+            color: #eadbdc;
+            text-decoration: none;
+            font-size: 13px;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: #a66f79;
+            color: white;
+        }
+
+        .logout-btn {
+            margin-top: auto;
+            padding: 13px;
+            background: transparent;
+            border: 1px solid #b98d91;
+            color: white;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .logout-btn:hover {
+            background: #a66f79;
+        }
+
+        .admin-content {
+            flex: 1;
+            min-width: 0;
+            padding: 40px;
+        }
+
+        .admin-header {
+            margin-bottom: 35px;
+        }
+
+        .admin-header p {
+            color: #b77b86;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 3px;
+        }
+
+        .admin-header h1,
+        .products-header h2,
+        .product-form h2 {
+            font-family: 'Playfair Display', serif;
+            color: #553d42;
+            font-weight: 500;
+        }
+
+        .admin-header h1 {
+            font-size: 34px;
+            margin-top: 8px;
+        }
+
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+        }
+
+        .products-header h2 {
+            font-size: 23px;
+        }
+
+        .add-product-btn,
+        .save-btn {
+            padding: 13px 22px;
+            background: #a66f79;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .add-product-btn:hover,
+        .save-btn:hover {
+            background: #855b64;
+        }
+
+        .product-form {
+            display: none;
+            background: white;
+            padding: 30px;
+            border: 1px solid #f0dfdc;
+            margin-bottom: 25px;
+        }
+
+        .product-form.active {
+            display: block;
+        }
+
+        .product-form h2 {
+            font-size: 24px;
+            margin-bottom: 25px;
+        }
+
+        .product-form label {
+            display: block;
+            color: #765e5b;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .product-form input,
+        .product-form select {
+            width: 100%;
+            padding: 13px;
+            margin: 8px 0 10px;
+            border: 1px solid #eadbd7;
+            background: #fffdfc;
+            font-family: inherit;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .product-form input:focus,
+        .product-form select:focus {
+            border-color: #b77b86;
+        }
+
+        .product-form input[type="file"] {
+            background: white;
+            cursor: pointer;
+        }
+
+        .image-preview {
+            display: none;
+            width: 130px;
+            height: 130px;
+            object-fit: contain;
+            margin: 10px 0;
+            padding: 8px;
+            border: 1px solid #eadbd7;
+            background: #fffaf8;
+        }
+
+        .save-btn,
+        .cancel-btn {
+            padding: 12px 22px;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            margin-top: 15px;
+        }
+
+        .cancel-btn {
+            background: #f2e9e7;
+            color: #694c50;
+            margin-left: 8px;
+        }
+
+        .cancel-btn:hover {
+            background: #e8d8d5;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            background: white;
+            border: 1px solid #f0dfdc;
+        }
+
+        .product-table {
+            width: 100%;
+            min-width: 850px;
+            border-collapse: collapse;
+        }
+
+        .product-table th,
+        .product-table td {
+            padding: 17px 16px;
+            text-align: left;
+            border-bottom: 1px solid #f0e5e2;
+            font-size: 13px;
+        }
+
+        .product-table th {
+            background: #563f43;
+            color: white;
+        }
+
+        .product-table td {
+            color: #806b6d;
+        }
+
+        .product-table tbody tr:hover {
+            background: #fffaf8;
+        }
+
+        .product-image {
+            width: 65px;
+            height: 65px;
+            object-fit: contain;
+            padding: 4px;
+            background: #fffaf8;
+            border: 1px solid #f0dfdc;
+        }
+
+        .product-table button {
+            padding: 8px 13px;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 11px;
+            margin: 3px;
+        }
+
+        .edit-btn {
+            background: #f2e4d7;
+            color: #76533f;
+        }
+
+        .delete-btn {
+            background: #f7e1e0;
+            color: #984e4e;
+        }
+
+        @media (max-width: 650px) {
+            .admin-layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                min-width: 0;
+                padding: 20px;
+            }
+
+            .admin-logo {
+                margin-bottom: 20px;
+            }
+
+            .sidebar-menu {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .logout-btn {
+                margin-top: 20px;
+            }
+
+            .admin-content {
+                padding: 20px;
+            }
+
+            .products-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="admin-layout">
+
+    <aside class="sidebar">
+
+        <div class="admin-logo">
+            NADÉA <span>PARFUM</span>
+            <small>ADMIN PANEL</small>
+        </div>
+
+        <nav class="sidebar-menu">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="products.html" class="active">Products</a>
+            <a href="orders.html">Orders</a>
+            <a href="customers.html">Customers</a>
+            <a href="../index.html">View Website</a>
+        </nav>
+
+        <button class="logout-btn" onclick="logoutAdmin()">
+            Logout
+        </button>
+
+    </aside>
+
+    <main class="admin-content">
+
+        <header class="admin-header">
+            <div>
+                <p>NADÉA PARFUM MANAGEMENT</p>
+                <h1>Manage Products</h1>
+            </div>
+        </header>
+
+        <section class="products-header">
+            <h2>Product Collection</h2>
+
+            <button class="add-product-btn" onclick="showProductForm()">
+                + Add Product
+            </button>
+        </section>
+
+        <form class="product-form" id="product-form">
+
+            <h2 id="form-title">Add New Product</h2>
+
+            <input type="hidden" id="product-id">
+
+            <label>Product Name</label>
+            <input type="text" id="product-name" required placeholder="Nama parfum">
+
+            <label>Description</label>
+            <input type="text" id="product-description" required placeholder="Deskripsi aroma">
+
+            <label>Price</label>
+            <input type="number" id="product-price" required min="1" placeholder="Harga produk">
+
+            <label>Product Image</label>
+            <input type="file" id="product-image" accept="image/*">
+            <img id="image-preview" class="image-preview" alt="Preview foto parfum">
+
+            <label>Category</label>
+            <select id="product-category" required>
+                <option value="">Pilih kategori</option>
+                <option value="women">Women</option>
+                <option value="men">Men</option>
+                <option value="unisex">Unisex</option>
+            </select>
+
+            <button type="submit" class="save-btn">
+                Save Product
+            </button>
+
+            <button type="button" class="cancel-btn" onclick="hideProductForm()">
+                Cancel
+            </button>
+
+        </form>
+
+        <div class="table-wrapper">
+
+            <table class="product-table">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Image</th>
+                        <th>Product Name</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Category</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="product-table-body"></tbody>
+            </table>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script src="../js/admin.js"></script>
+
+</body>
+</html>
